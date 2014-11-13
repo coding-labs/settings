@@ -1,4 +1,4 @@
 PATH = 'PATH\TO\JOHN'
-USERS = 5.0
-ROLEZ = '[['John', 'Theseas', 'All the others']]'
+USERS = 15
 ADMIN = 'True'
+ROLEZ = '[['John', 'Theseas', 'All the others']]'

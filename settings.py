@@ -7,8 +7,14 @@ import os
 class SettingsObj(object):
     '''The class from which the Settings values are retrieved as a dictionary Key'''
     
+    # def __init__(self, app=None):
+        # self.app = app
+        # if app is not None:
+            # self.init_app(app)
+            
     def __init__(self,name):
         self.__name__ = name
+        self.settings = Settings()
         
     def __get__(self, obj):
         if obj is None:
@@ -50,8 +56,24 @@ class Settings(dict):
                     self.__setitem__(key, self.load_value(value))
         print("Total recursives = %d" % self.count)
         
-    def save_tofile(self):
-        print (self)
+    def update_settings(self):
+        d = {'1':True,'0':False,'t':True}
+        with open(self.file,'w') as fi:
+            for k,v in self.items():
+                vl = "{0} = {1}{2}{1}\n"
+                if self.is_numeric(v):
+                    try:
+                       v = (d[self.is_numeric(v,'n')])
+                    except KeyError:
+                        pass
+                        
+                    vl = vl.format(k,"",v)
+                else:
+                    vl = vl.format(k,"'",v)
+                fi.write(vl)
+        print("Settings file updated")
+        
+
     def load_value(self,value):
         self.count+=1
         value = value.strip()
@@ -97,22 +119,7 @@ class Settings(dict):
         else:
             rvalue = value
         return rvalue
-    def update_settings(self):
-        d = {'1':True,'0':False,'t':True}
-        with open(self.file,'w') as fi:
-            for k,v in self.items():
-                vl = "{0} = {1}{2}{1}\n"
-                if self.is_numeric(v):
-                    try:
-                       v = (d[self.is_numeric(v,'n')])
-                    except KeyError:
-                        pass
-                        
-                    vl = vl.format(k,"",v)
-                else:
-                    vl = vl.format(k,"'",v)
-                fi.write(vl)
-        print("Settings file updated")
+        
             
     def is_numeric(self,num,type='bool'):
         '''If type is something different than bool then it returns the
