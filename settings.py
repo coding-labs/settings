@@ -135,6 +135,16 @@ class Settings(dict):
             rv = y
         return rv
         
+       
+    def matcher(value,pattern='key_value'):
+        import re
+        patterns = {
+            'key_value':'((?:[a-z][a-z0-9_]*)\s*?(=)\s*?.*)$','advance_key':'',
+            'custom':''}
+         if type(value) is list or type(value) is dict:
+            pass
+        return re.match('<.*?>', value).group()
+        
     def __repr__(self):
         return '<%s %s>' % (self.__class__.__name__, dict.__repr__(self))
             
