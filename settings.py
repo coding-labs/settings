@@ -57,20 +57,13 @@ class Settings(dict):
         print("Total recursives = %d" % self.count)
         
     def update_settings(self):
-        d = {'1':True,'0':False,'t':True}
+        #d = {'1':True,'0':False,'t':True}
         with open(self.file,'w') as fi:
+            output = u""
             for k,v in self.items():
-                vl = "{0} = {1}{2}{1}\n"
-                if self.is_numeric(v):
-                    try:
-                       v = (d[self.is_numeric(v,'n')])
-                    except KeyError:
-                        pass
-                        
-                    vl = vl.format(k,"",v)
-                else:
-                    vl = vl.format(k,"'",v)
-                fi.write(vl)
+                output += u"{0} = {1}\n".format(k, repr(v).replace('\\\\', '\\'))
+            fi.write(output)
+            fi.flush()
         print("Settings file updated")
         
 
@@ -99,10 +92,10 @@ class Settings(dict):
                     #escaped = not escaped
                     if escaped == True and e_chars[ec] == c:
                         ec = ""
-                        escaped = not escaped
+                        escaped = False
                     elif escaped == False:
                         ec = c
-                        escaped = not escaped        
+                        escaped = True        
                 if escaped == False:
                     if c == "," or i+1>=len(value):
                         if c == ",":
@@ -141,7 +134,7 @@ class Settings(dict):
         patterns = {
             'key_value':'((?:[a-z][a-z0-9_]*)\s*?(=)\s*?.*)$','advance_key':'',
             'custom':''}
-         if type(value) is list or type(value) is dict:
+        if type(value) is list or type(value) is dict:
             pass
         return re.match('<.*?>', value).group()
         

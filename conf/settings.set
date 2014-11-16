@@ -1,4 +1,6 @@
-ADMIN = 'True'
-PATH = 'PATH\TO\JOHN'
-ROLEZ = '[['John', 'Theseas', 'All the others']]'
+reload_every = 1.5
+users = 10.0
+areas = ['top', 'header', 'content', 'footer']
+path = '/linux/path\windows\path'
+escaped_string = "John\'s settings"
 USERS = 10
