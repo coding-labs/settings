@@ -1,6 +1,8 @@
 reload_every = 1.5
-users = 10.0
-areas = ['top', 'header', 'content', 'footer']
-path = '/linux/path\windows\path'
-escaped_string = "John\'s settings"
 USERS = 10
+is_active = True
+is_not_active = False
+path = '/linux/path\windows\path'
+users = 10.0
+escaped_string = "John\'s settings"
+areas = ['top', 'header', 'content', 'footer']

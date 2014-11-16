@@ -1,4 +1,4 @@
-import os
+import os, sys
 '''This class Parses a settings file with extra customization needed for the system or in the future from the 
    extensions that might be developed. 
    We do not use compile(exec(file.py)) because this could have unwilling consequences'''
@@ -109,8 +109,14 @@ class Settings(dict):
             rvalue  = []
             for v in l:
                 rvalue.append(self.load_value(v))
-        else:
+        elif value=="True" or value=="False":
+            if value=="True":
+                value = True
+            else:
+                value = False
             rvalue = value
+        else:
+            sys.stderr.write("Unrecognized value type: {0}", value);
         return rvalue
         
             
