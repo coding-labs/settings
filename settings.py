@@ -121,18 +121,18 @@ class Settings(dict):
         
             
     def load_numeric(self,num):
-        '''If type is something different than bool then it returns the
-            value converted otherwise it returns true false'''
+        '''Converts the string value to int or float depending on the type.
+        If the value is not a valid number then returns None and prints an error message.'''
         number = None
         try:
             number = int(num)
         except ValueError:
             try:
                 number = float(num)
-            except:
+            except ValueError:
                 sys.stderr.write("The value is not an valid number.")
                
-        return rv
+        return number
         
        
     def matcher(value,pattern='key_value'):
