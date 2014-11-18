@@ -116,7 +116,7 @@ class Settings(dict):
                 value = False
             rvalue = value
         else:
-            sys.stderr.write("Unrecognized value type: {0}", value);
+            sys.stderr.write("Unrecognized value type: {0}\n".format(value));
         return rvalue
         
             
@@ -130,8 +130,7 @@ class Settings(dict):
             try:
                 number = float(num)
             except ValueError:
-                sys.stderr.write("The value is not an valid number.")
-               
+                sys.stderr.write("The {0} is not a valid number.\n".format(num))  
         return number
         
        
