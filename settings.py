@@ -120,18 +120,18 @@ class Settings(dict):
         return rvalue
         
             
-    def is_numeric(self,num,type='bool'):
+    def load_numeric(self,num):
         '''If type is something different than bool then it returns the
             value converted otherwise it returns true false'''
-        rv = False
-        y = False
+        number = None
         try:
-            rv = round(float(num),3)
-            y = True
-        except (ValueError, TypeError):
-                rv = y = False
-        if type == 'bool':
-            rv = y
+            number = int(num)
+        except ValueError:
+            try:
+                number = float(num)
+            except:
+                sys.stderr.write("The value is not an valid number.")
+               
         return rv
         
        
