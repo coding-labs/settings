@@ -3,30 +3,6 @@ import os, sys
    extensions that might be developed. 
    We do not use compile(exec(file.py)) because this could have unwilling consequences'''
 
-
-class SettingsObj(object):
-    '''The class from which the Settings values are retrieved as a dictionary Key'''
-    
-    # def __init__(self, app=None):
-        # self.app = app
-        # if app is not None:
-            # self.init_app(app)
-            
-    def __init__(self,name):
-        self.__name__ = name
-        self.settings = Settings()
-        
-    def __get__(self, obj):
-        if obj is None:
-            return self
-        rv = obj.settings[self.__name__]
-        return rv
-    
-    def __set__(self, obj, value):
-        obj.settings[self.__name__] = value
-      
-
-
 class Settings(dict):
     #file = "conf%ssettings.py" % (os.sep)
     def __init__(self):
