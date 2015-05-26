@@ -9,34 +9,47 @@ class Settings(dict):
     #
     # @param cpath: path to configuration file (default "conf")
     # @param config: configuration file name (default "settings.cfg")
-    # @debug debug: toggles debugging on or  off (default False)
-    def __init__(self, cpath=u"conf", config=u"settings.cfg", debug=False):
+    # @param debug: toggles debugging on or  off (default False)
+    # @param max_filesize: max configs file size (defualt 1mb)
+    def __init__(self, cpath = u"conf", config = u"settings.cfg", debug = False, max_filesize = 1048576):
         self.file = path.abspath(path.join(cpath, config))
         self.init_timestamp = self.get_time()
         self.count = 0
+        self.max_filesize = max_filesize
 
-
+    ##
+    # Parses the config in case it changed
     def parse(self):
         if self.init_timestamp != self.get_time():
-            print ("Timestamp is different updating time....")
+            if debug:
+                print ("Timestamp is different updating time....")
             self.init_timestamp = self.get_time()
-        self.load_settings()
-        
+            self.load_settings()
 
-
+    ##
+    # Returns the configs modification time
+    #
+    # @returns time in epoch format
     def get_time(self):
-        return path.getctime(self.file)
+        # returns the files modification time
+        return path.getmtime(self.file)
         
     def load_settings(self):
-        #f = open(self.file,'r')
-        #f.seek(0)
-        with open(self.file,'r') as fil:
-                for f in fil:
-                    key, value = f.split("=",1)
-                    key = key.strip()
-                    self.__setitem__(key, self.load_value(value))
-        print("Total recursives = %d" % self.count)
-        
+        conf_file = open(self.file,'r')
+        # aborts reading in case the config file is larger than the maximum file size
+        if self.max_filesize < path.getsize(self.file):
+            raise IOError("Configuration file is too big!")
+        content = conf_file.read(self.max_filesize) # just in case
+        self.loads(content)
+
+    ##
+    # Loads settings from a string instead of the file directly. This helps
+    # with the unit testing
+    #
+    # @param content: configuration file contents
+    def loads(self, content):
+        pass
+
     def update_settings(self):
         with open(self.file,'w') as fi:
             output = u""
