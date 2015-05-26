@@ -11,7 +11,7 @@ class Settings(dict):
     # @param config: configuration file name (default "settings.cfg")
     # @param debug: toggles debugging on or  off (default False)
     # @param max_filesize: max configs file size (defualt 1mb)
-    def __init__(self, cpath = u"conf", config = u"settings.cfg", debug = False, max_filesize = 1048576):
+    def __init__(self, cpath = u"conf", config = u"settings.conf", debug = False, max_filesize = 1048576):
         self.file = path.abspath(path.join(cpath, config))
         self.init_timestamp = self.get_time()
         self.count = 0
