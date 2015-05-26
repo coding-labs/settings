@@ -1,12 +1,17 @@
-import os, sys
-'''This class Parses a settings file with extra customization needed for the system or in the future from the 
-   extensions that might be developed. 
-   We do not use compile(exec(file.py)) because this could have unwilling consequences'''
+import sys
+from os import path
 
 class Settings(dict):
-    #file = "conf%ssettings.py" % (os.sep)
-    def __init__(self):
-        self.file = "conf%ssettings.set" % (os.sep,)
+    "Reads a simple configuration file and stores the values in a dict like style."
+
+    ##
+    # objects initialize method
+    #
+    # @param cpath: path to configuration file (default "conf")
+    # @param config: configuration file name (default "settings.cfg")
+    # @debug debug: toggles debugging on or  off (default False)
+    def __init__(self, cpath=u"conf", config=u"settings.cfg", debug=False):
+        self.file = path.abspath(path.join(cpath, config))
         self.init_timestamp = self.get_time()
         self.count = 0
 
@@ -20,7 +25,7 @@ class Settings(dict):
 
 
     def get_time(self):
-        return os.path.getctime(self.file)
+        return path.getctime(self.file)
         
     def load_settings(self):
         #f = open(self.file,'r')
@@ -33,7 +38,6 @@ class Settings(dict):
         print("Total recursives = %d" % self.count)
         
     def update_settings(self):
-        #d = {'1':True,'0':False,'t':True}
         with open(self.file,'w') as fi:
             output = u""
             for k,v in self.items():
