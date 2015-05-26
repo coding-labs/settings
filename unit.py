@@ -13,6 +13,11 @@ class SettingsTest(unittest.TestCase):
         self.settings.loads(setting)
         self.assertEqual(self.settings["test"], 1)
 
+    def test_negative_number(self):
+        setting = " num = -2590 "
+        self.settings.loads(setting)
+        self.assertEqual(self.settings['num'], -2590)
+
     def test_invalid_numeric(self):
         setting = "num = 1.2.3"
         with self.assertRaises(ValueError):
