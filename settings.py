@@ -13,9 +13,9 @@ class Settings(dict):
     # @param max_filesize: max configs file size (defualt 1mb)
     def __init__(self, cpath = u"conf", config = u"settings.conf", debug = False, max_filesize = 1048576):
         self.file = path.abspath(path.join(cpath, config))
-        self.init_timestamp = self.get_time()
         self.count = 0
         self.max_filesize = max_filesize
+        self.debug = debug
 
     ##
     # Parses the config in case it changed
@@ -38,7 +38,7 @@ class Settings(dict):
         conf_file = open(self.file,'r')
         # aborts reading in case the config file is larger than the maximum file size
         if self.max_filesize < path.getsize(self.file):
-            raise IOError("Configuration file is too big!")
+            raise IOError(u"Configuration file is too big!")
         content = conf_file.read(self.max_filesize) # just in case
         self.loads(content)
 
@@ -48,7 +48,17 @@ class Settings(dict):
     #
     # @param content: configuration file contents
     def loads(self, content):
-        pass
+        for line in content.split('\n'):
+            # finds the first occurance of "=" and splits the line to key, value
+            key, value = line.split("=", 1) 
+            key = key.strip()
+            if key.isalnum():
+                value = value.strip()
+                # inserts the key value into the dictionary
+                self.__setitem__(key, self.load_value(value))
+            elif key[0]!='#':
+                # this means the key is not valid and not a comment either
+                raise KeyError(u"Invaild key in {0} at line {1}".format(self.file, self.count))
 
     def update_settings(self):
         with open(self.file,'w') as fi:
@@ -59,58 +69,16 @@ class Settings(dict):
             fi.flush()
         print("Settings file updated")
         
-
-    def load_value(self,value):
-        self.count+=1
-        value = value.strip()
-        rvalue = None
-        if value[0]=='"' or value[0] == "'":
-            rvalue = value.strip("'\"")
-        elif self.is_numeric(value):
-            print (value)
-            rvalue = self.is_numeric(value,'num')
-        elif value[0] =='[' or value[0] == '(':
-            #value = value.strip("([])")
-            value = value[1:-1]
-            #value = value.split(',')
-            escaped = False
-            ec = ""
-            l = []
-            temp = ""
-            i=0
-            e_chars = {"'":"'", '"':'"', '[':']', "(":")", '{':'}'}
-            while i<len(value):
-                c = value[i]
-                if c in e_chars or c in e_chars.values():
-                    #escaped = not escaped
-                    if escaped == True and e_chars[ec] == c:
-                        ec = ""
-                        escaped = False
-                    elif escaped == False:
-                        ec = c
-                        escaped = True        
-                if escaped == False:
-                    if c == "," or i+1>=len(value):
-                        if c == ",":
-                            c = ""
-                        temp += c
-                        l.append(temp)
-                        temp = ""
-                else:
-                    temp += c
-                i+=1
-            rvalue  = []
-            for v in l:
-                rvalue.append(self.load_value(v))
-        elif value=="True" or value=="False":
-            if value=="True":
-                value = True
-            else:
-                value = False
-            rvalue = value
-        else:
-            sys.stderr.write("Unrecognized value type: {0}\n".format(value));
-        return rvalue
+    ##
+    # Try to load a value, in case there is an error in the format
+    # it raises ValueError
+    def load_value(self,val):
+        value = None
+        self.count += 1 
+        #checks if the value is a number
+        if val[0].isdigit() or val[0]=='-':
+            value = self.load_numeric(val)
+        return value
         
             
     def load_numeric(self,num):
@@ -121,9 +89,11 @@ class Settings(dict):
             number = int(num)
         except ValueError:
             try:
-                number = float(num)
+                 number = float(num)
             except ValueError:
-                sys.stderr.write("The {0} is not a valid number.\n".format(num))  
+                if self.debug:
+                    sys.stderr.write(u"Cannot parse number in {0} at line {1}".format(self.file, self.count))
+                raise ValueError(u'ValueError in {0} at line {1}'.format(self.file, self.count))
         return number
         
        

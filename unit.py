@@ -1,13 +1,27 @@
-from settings import Settings, SettingsObj
+from settings import Settings
+import unittest
 
+class SettingsTest(unittest.TestCase):
+    def setUp(self):
+        self.settings = Settings(max_filesize=100)
 
-setting = Settings()
-setting.parse()
+    def tearDown(self):
+        pass
 
-print("-"*20)
+    def test_numeric(self):
+        setting = "test=1"
+        self.settings.loads(setting)
+        self.assertEqual(self.settings["test"], 1)
 
-for k in setting:
-    print("%s = %s" %(k,setting[k]))
-setting['USERS'] = 10
-setting.update_settings()
-obj = SettingsObj('app')
+    def test_invalid_numeric(self):
+        setting = "num = 1.2.3"
+        with self.assertRaises(ValueError):
+            self.settings.loads(setting)
+
+    def test_key_error(self):
+        setting = "@key = 6"
+        with self.assertRaises(KeyError):
+            self.settings.loads(setting)
+
+if __name__=='__main__':
+    unittest.main()
