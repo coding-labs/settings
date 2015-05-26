@@ -78,9 +78,33 @@ class Settings(dict):
         #checks if the value is a number
         if val[0].isdigit() or val[0]=='-':
             value = self.load_numeric(val)
+        elif val[0]=='"' or val[0]=="'": # is string value
+            value = self.load_string(val)
         return value
-        
-            
+    
+    ##
+    # Validates an loads a string
+    #
+    # @param string: the potencial string
+    # @param i: index in the string, if i is 0 or positive the function
+    #   checks partialy the line and extracts the first valid string otherwise
+    #   it checks the whole line and raises an ValueError in case of malformed string
+    # @returns if i>=0 then returns the first valid string and the end index
+    #   otherwise it returns just a string
+    def load_string(self, string, i=-1):
+        is_valid = False
+        escaped = False
+        value = None
+        # checks the whole line
+        if(i<0):
+            while(i<len(string)):
+                pass
+
+    ##
+    # Loads an numberic value (int | float) or raises ValueError
+    #
+    # @param num: a string with the numeric value
+    # @returns an int or a float value
     def load_numeric(self,num):
         '''Converts the string value to int or float depending on the type.
         If the value is not a valid number then returns None and prints an error message.'''

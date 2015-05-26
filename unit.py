@@ -8,25 +8,25 @@ class SettingsTest(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_numeric(self):
-        setting = "test=1"
+    def equal(self, setting, key, value):
         self.settings.loads(setting)
-        self.assertEqual(self.settings["test"], 1)
+        self.assertEqual(self.settings[key], value)
+
+    def error(self, setting, error_type):
+        with self.assertRaises(error_type):
+            self.settings.loads(setting)
+
+    def test_numeric(self):
+        self.equal("test=1", 'test', 1)
 
     def test_negative_number(self):
-        setting = " num = -2590 "
-        self.settings.loads(setting)
-        self.assertEqual(self.settings['num'], -2590)
+        self.equal(" num = -65498 ", "num", -65498)
 
     def test_invalid_numeric(self):
-        setting = "num = 1.2.3"
-        with self.assertRaises(ValueError):
-            self.settings.loads(setting)
+        self.error("num = 1.2.3", ValueError)
 
     def test_key_error(self):
-        setting = "@key = 6"
-        with self.assertRaises(KeyError):
-            self.settings.loads(setting)
+        self.error("@key = 6", KeyError)
 
 if __name__=='__main__':
     unittest.main()
