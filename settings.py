@@ -54,14 +54,19 @@ class Settings(dict):
                 key, value = line.split("=", 1) 
             else:
                 key = line
-            key = key.strip()
-            if key.isalnum():
-                value = value.strip()
-                # inserts the key value into the dictionary
-                self.__setitem__(key, self.load_value(value))
-            elif key[0]!='#':
-                # this means the key is not valid and not a comment either
-                raise KeyError(u"Invaild key in {0} at line {1}".format(self.file, self.count))
+            key = key.strip(" \t")
+            # ignores blank lines
+            if len(key)>0:
+                if key.isalnum():
+                    value = value.strip("\t ")
+                    # inserts the key value pair into the dictionary if value exists
+                    if len(value)>0:
+                        self.__setitem__(key, self.load_value(value))
+                    else:
+                        self.__setitem__(key, None)
+                elif key[0]!='#':
+                    # this means the key is not valid and not a comment either
+                    raise KeyError(u"Invaild key in {0} at line {1}".format(self.file, self.count))
 
     def update_settings(self):
         with open(self.file,'w') as fi:
