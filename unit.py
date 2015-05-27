@@ -28,5 +28,13 @@ class SettingsTest(unittest.TestCase):
     def test_key_error(self):
         self.error("@key = 6", KeyError)
 
+    def test_comment(self):
+        setting = "#comment here"
+        self.settings.loads(setting)
+        self.assertEqual(self.settings.has_key(setting), False)
+
+    def test_string(self):
+        self.equal("str=\'ok my man!\'", "str", "ok my man!")
+
 if __name__=='__main__':
     unittest.main()

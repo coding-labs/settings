@@ -50,7 +50,10 @@ class Settings(dict):
     def loads(self, content):
         for line in content.split('\n'):
             # finds the first occurance of "=" and splits the line to key, value
-            key, value = line.split("=", 1) 
+            if line.find("=")>0:
+                key, value = line.split("=", 1) 
+            else:
+                key = line
             key = key.strip()
             if key.isalnum():
                 value = value.strip()
@@ -94,11 +97,23 @@ class Settings(dict):
     def load_string(self, string, i=-1):
         is_valid = False
         escaped = False
-        value = None
+        value = u""
         # checks the whole line
         if(i<0):
+            start = string[0]
+            i = 1
             while(i<len(string)):
-                pass
+                if string[i]==start and not escaped:
+                    break
+                elif string[i]=='\'':
+                    escaped = True
+                elif escaped ==True:
+                    escaped = False
+                    value += string[i]
+                else:
+                    value += string[i]
+                i += 1
+        return value
 
     ##
     # Loads an numberic value (int | float) or raises ValueError
